@@ -1,6 +1,7 @@
-const http = require('http');
+ const http = require('http');
 const TelegramBot = require('node-telegram-bot-api');
 const admin = require('firebase-admin');
+const fs = require('fs');
 
 // রেন্ডার ফ্রি সার্ভিসের জন্য পোর্ট বাইন্ডিং ও HTTP সার্ভার
 const server = http.createServer((req, res) => {
@@ -13,8 +14,17 @@ server.listen(PORT, () => {
   console.log(`Server is listening on port ${PORT}`);
 });
 
-// ফায়ারবেস কনফিগারেশন যুক্ত করুন (সার্ভারে আপলোডের সময় সিক্রেট ফাইল ব্যবহার করবেন)
-const serviceAccount = require('./firebase-key.json');
+// রেন্ডার সিক্রেট পাথ অথবা লোকাল পাথ হ্যান্ডেল করার ব্যবস্থা
+const secretPath = '/etc/secrets/firebase-key.json';
+const localPath = './firebase-key.json';
+
+let serviceAccount;
+if (fs.existsSync(secretPath)) {
+  serviceAccount = require(secretPath);
+} else {
+  serviceAccount = require(localPath);
+}
+
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
   databaseURL: "https://bet-baji-vip.firebaseio.com"
