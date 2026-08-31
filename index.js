@@ -1,5 +1,17 @@
+const http = require('http');
 const TelegramBot = require('node-telegram-bot-api');
 const admin = require('firebase-admin');
+
+// রেন্ডার ফ্রি সার্ভিসের জন্য পোর্ট বাইন্ডিং ও HTTP সার্ভার
+const server = http.createServer((req, res) => {
+  res.writeHead(200, { 'Content-Type': 'text/plain' });
+  res.end('Bot is running successfully!\n');
+});
+
+const PORT = process.env.PORT || 3000;
+server.listen(PORT, () => {
+  console.log(`Server is listening on port ${PORT}`);
+});
 
 // ফায়ারবেস কনফিগারেশন যুক্ত করুন (সার্ভারে আপলোডের সময় সিক্রেট ফাইল ব্যবহার করবেন)
 const serviceAccount = require('./firebase-key.json');
